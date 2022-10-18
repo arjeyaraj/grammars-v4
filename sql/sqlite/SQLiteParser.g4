@@ -104,13 +104,17 @@ indexed_column:
 	(column_name | expr) (COLLATE collation_name)? asc_desc?;
 
 create_table_stmt:
-	CREATE (TEMP | TEMPORARY)? TABLE (IF NOT EXISTS)? (
+	CREATE (TEMP | TEMPORARY)? (DATA_SUBJECT)? TABLE (IF NOT EXISTS)? (
 		schema_name '.'
 	)? table_name (
 		(
 			'(' column_def (',' column_def)* (
 				',' table_constraint
-			)* ')' (WITHOUT rowID = IDENTIFIER)?
+			)*
+			(
+				',' anonymize_constraint
+			)*
+			 ')' (WITHOUT rowID = IDENTIFIER)?
 		)
 		| (AS select_stmt)
 	);
@@ -152,8 +156,12 @@ table_constraint: (CONSTRAINT name)? (
 		)
 	);
 
+anonymize_constraint: (CONSTRAINT name)? (
+	ON (GET | DEL) column_name ANON '(' column_name ( ',' column_name)* ')'
+);
+
 foreign_key_clause:
-	REFERENCES foreign_table (
+	(REFERENCES | OWNED_BY | OWNS | ACCESSED_BY | ACCESSES) foreign_table (
 		'(' column_name ( ',' column_name)* ')'
 	)? (
 		(
