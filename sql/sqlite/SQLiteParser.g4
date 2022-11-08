@@ -109,12 +109,8 @@ create_table_stmt:
 	)? table_name (
 		(
 			'(' column_def (',' column_def)* (
-				',' table_constraint
-			)*
-			(
-				',' anonymize_constraint
-			)*
-			 ')' (WITHOUT rowID = IDENTIFIER)?
+				',' (table_constraint | anonymize_constraint)
+			)* ')' (WITHOUT rowID = IDENTIFIER)?
 		)
 		| (AS select_stmt)
 	);
@@ -161,7 +157,7 @@ anonymize_constraint: (CONSTRAINT name)? (
 );
 
 foreign_key_clause:
-	(REFERENCES | OWNED_BY | OWNS | ACCESSED_BY | ACCESSES) foreign_table (
+	((REFERENCES ONLY?) | OWNED_BY | OWNS | ACCESSED_BY | ACCESSES) foreign_table (
 		'(' column_name ( ',' column_name)* ')'
 	)? (
 		(

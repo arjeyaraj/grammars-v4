@@ -140,6 +140,7 @@ NULL_: N U L L;
 OF: O F;
 OFFSET: O F F S E T;
 ON: O N;
+ONLY: O N L Y;
 OR: O R;
 ORDER: O R D E R;
 OUTER: O U T E R;
